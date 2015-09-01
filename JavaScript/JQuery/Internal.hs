@@ -5,7 +5,7 @@ module JavaScript.JQuery.Internal where
 import GHCJS.Types
 import GHCJS.DOM.Types (Element(..))
 import GHCJS.Foreign
-
+import GHCJS.Foreign.Callback
 import Control.Concurrent.MVar
 
 data JQuery_
@@ -16,7 +16,7 @@ type Event = JSRef Event_
 
 #ifdef ghcjs_HOST_OS
 foreign import javascript unsafe "$2.addClass($1)"       jq_addClass          :: JSString             -> JQuery -> IO JQuery
-foreign import javascript unsafe "$3.animate($1,$2)"     jq_animate           :: JSObject a -> JSObject b -> JQuery -> IO JQuery           
+foreign import javascript unsafe "$3.animate($1,$2)"     jq_animate           :: JSRef a -> JSRef b -> JQuery -> IO JQuery           
 foreign import javascript unsafe "$2.attr($1)"           jq_getAttr           :: JSString             -> JQuery -> IO JSString
 foreign import javascript unsafe "$3.attr($1,$2)"        jq_setAttr           :: JSString -> JSString -> JQuery -> IO JQuery
 foreign import javascript unsafe "$2.hasClass($1)"       jq_hasClass          :: JSString             -> JQuery -> IO Bool
@@ -130,7 +130,7 @@ foreign import javascript interruptible "jQuery.ajax($1,$2).always(function(d,ts
           -> IO (JSRef ajaxResult)
 
 foreign import javascript unsafe "$8.on($2, $3, $4, h$jquery_makeListener($1, $5, $6, $7))"
-  jq_on :: JSFun a                -- ^ callback
+  jq_on :: Callback a                -- ^ callback
         -> JSString               -- ^ event type
         -> JSString               -- ^ descendant selector
         -> JSRef b                -- ^ data
@@ -141,7 +141,7 @@ foreign import javascript unsafe "$8.on($2, $3, $4, h$jquery_makeListener($1, $5
         -> IO ()
 
 foreign import javascript unsafe "$8.one($2, $3, $4, h$jquery_makeListener($1, $5, $6, $7))"
-  jq_one :: JSFun a                -- ^ callback
+  jq_one :: Callback a                -- ^ callback
          -> JSString               -- ^ event type
          -> JSString               -- ^ descendant selector
          -> JSRef b                -- ^ data
@@ -152,7 +152,7 @@ foreign import javascript unsafe "$8.one($2, $3, $4, h$jquery_makeListener($1, $
          -> IO ()
 
 foreign import javascript unsafe "$4.off($2,$3,$1)"
-  jq_off :: JSFun a                -- ^ callback
+  jq_off :: Callback a                -- ^ callback
          -> JSString               -- ^ event type
          -> JSString               -- ^ descendant selector
          -> JQuery
